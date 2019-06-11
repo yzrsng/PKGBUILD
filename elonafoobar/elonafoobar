@@ -1,6 +1,6 @@
 #!/bin/bash
 GAMEDATA=/usr/share/ElonaFoobar
-USERDATA="$HOME"/.ElonaFoobar
+USERDATA=${XDG_DATA_HOME:-~/.ElonaFoobar}
 
 if [ ! -d "$USERDATA" ] ; then
     cp -rs "$GAMEDATA" "$USERDATA"
