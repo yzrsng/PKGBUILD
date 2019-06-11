@@ -1,0 +1,21 @@
+#!/bin/bash
+GAMEDATA=/usr/share/ElonaFoobar
+USERDATA="$HOME"/.ElonaFoobar
+
+if [ ! -d "$USERDATA" ] ; then
+    cp -rs "$GAMEDATA" "$USERDATA"
+
+    ln -s /usr/share/fonts "$USERDATA"/font/system
+    ln -s ~/.local/share/fonts "$USERDATA"/font/user
+
+    rm -r "$USERDATA"/profile
+    cp -r "$GAMEDATA"/profile "$USERDATA"/
+    rm "$USERDATA"/Elona_foobar
+    cp "$GAMEDATA"/Elona_foobar "$USERDATA"/
+    rm "$USERDATA"/Elona\ foobar\ Launcher
+    cp "$GAMEDATA"/Elona\ foobar\ Launcher "$USERDATA"/
+fi
+
+# sed -e 's/file = ""/file = "system\/TTF\/migu-1m-regular.ttf"/' -i "$USERDATA"/profile/default/config.hcl
+
+"$USERDATA"/Elona_foobar ${@+"$@"}
