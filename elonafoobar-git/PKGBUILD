@@ -1,0 +1,120 @@
+# Maintainer:
+
+_pkgbase=elonafoobar
+pkgname="$_pkgbase"-git
+pkgver=v0.4.3.58.g13f89c88
+pkgrel=1
+pkgdesc="Elona variant git version"
+arch=('i686' 'x86_64')
+url='https://github.com/ElonaFoobar/ElonaFoobar'
+license=('MIT' 'custom')
+depends=('sdl2'
+         'sdl2_ttf'
+         'sdl2_image'
+         'sdl2_mixer'
+         'gtk3'
+         'lua'
+         'boost'
+         'smpeg'
+         'timidity++'
+         )
+makedepends=('cmake'
+             'git'
+             'sdl2'
+             'sdl2_ttf'
+             'sdl2_image'
+             'sdl2_mixer'
+             'gtk3'
+             'lua'
+             'boost'
+             )
+conflicts=("$_pkgbase")
+provides=("$_pkgbase")
+source=('git://github.com/ElonaFoobar/ElonaFoobar.git'
+        'http://ylvania.style.coocan.jp/file/elona122.zip'
+        'elonafoobar'
+        'elonafoobar.desktop'
+        )
+sha512sums=('SKIP'
+          '15e6b9ece39d1484389ec7564e35e1dc9140a436da1d07613b6d8148bf95f4a4c3c96822ba2adeb3ccd33aa952e8977c9681d90f3cf06afbfde404e88660394d'
+          '0ef20d3901d5f5fafd05e6c979e064a397ca8cd597092804f0a9a2c872f94d4e3649c30c048ea66a447951c654f3b80e558595a9f3e76ab3e437c942a577de32'
+          'ba303510c6929f094fdc0835d363a582834d13f97b52178f6898421411dcb1c0c5ad4c39ea16bf416627b109e55c813a720219222e8131e59a081da53d96136b'
+          )
+
+pkgver() {
+  cd ElonaFoobar
+  echo "$(git describe --long --tags | tr - .)"
+}
+
+prepare() {
+  if [ ! -e "${srcdir}/ElonaFoobar/deps/elona" ] ; then
+    ln -s ${srcdir}/elona ${srcdir}/ElonaFoobar/deps/
+  fi
+}
+
+build() {
+  cd ElonaFoobar
+  make build_release launcher_release
+}
+
+package() {
+  mkdir -p "$pkgdir/usr/bin" \
+           "$pkgdir/usr/share/applications" \
+           "$pkgdir/usr/share/ElonaFoobar" \
+           "$pkgdir/usr/share/icons/hicolor/16x16/apps/" \
+           "$pkgdir/usr/share/icons/hicolor/24x24/apps/" \
+           "$pkgdir/usr/share/icons/hicolor/32x32/apps/" \
+           "$pkgdir/usr/share/icons/hicolor/40x40/apps/" \
+           "$pkgdir/usr/share/icons/hicolor/64x64/apps/" \
+           "$pkgdir/usr/share/icons/hicolor/96x96/apps/" \
+           "$pkgdir/usr/share/icons/hicolor/128x128/apps/" \
+           "$pkgdir/usr/share/icons/hicolor/192x192/apps/" \
+           "$pkgdir/usr/share/icons/hicolor/256x256/apps/" \
+           "$pkgdir/usr/share/licenses/ElonaFoobar"
+  
+  install -D -m755 elonafoobar "$pkgdir/usr/bin/"
+  install -D -m644 elonafoobar.desktop "$pkgdir/usr/share/applications/"
+  
+  cd ElonaFoobar/bin
+  cp -r data \
+        font \
+        graphic \
+        locale \
+        map \
+        mod \
+        profile \
+        sound \
+        user \
+        "$pkgdir/usr/share/ElonaFoobar/"
+                    
+  install -D -m755 Elona_foobar "$pkgdir/usr/share/ElonaFoobar/"
+  install -D -m755 Elona\ foobar\ Launcher "$pkgdir/usr/share/ElonaFoobar/"
+
+  install -D -m644 graphic/LICENSE.txt \
+                   graphic/Elona\ foobar\ License\ v1.txt \
+                   graphic/Elona\ foobar\ license\ v1\ \(ja\).txt \
+                  "$pkgdir/usr/share/licenses/ElonaFoobar/"
+  cd ../..
+  
+  install -D -m644 ElonaFoobar/LICENSE.txt "$pkgdir/usr/share/licenses/ElonaFoobar/LICENSE"
+  
+  cd ElonaFoobar/resources
+  install -D -m644 icon16x16.png "$pkgdir/usr/share/icons/hicolor/16x16/apps/elonafoobar.png"
+  install -D -m644 icon24x24.png "$pkgdir/usr/share/icons/hicolor/24x24/apps/elonafoobar.png"
+  install -D -m644 icon32x32.png "$pkgdir/usr/share/icons/hicolor/32x32/apps/elonafoobar.png"
+  install -D -m644 icon40x40.png "$pkgdir/usr/share/icons/hicolor/40x40/apps/elonafoobar.png"
+  install -D -m644 icon64x64.png "$pkgdir/usr/share/icons/hicolor/64x64/apps/elonafoobar.png"
+  install -D -m644 icon96x96.png "$pkgdir/usr/share/icons/hicolor/96x96/apps/elonafoobar.png"
+  install -D -m644 icon128x128.png "$pkgdir/usr/share/icons/hicolor/128x128/apps/elonafoobar.png"
+  install -D -m644 icon192x192.png "$pkgdir/usr/share/icons/hicolor/192x192/apps/elonafoobar.png"
+  install -D -m644 icon256x256.png "$pkgdir/usr/share/icons/hicolor/256x256/apps/elonafoobar.png"
+
+  cd ../
+
+  install -D -m644 CREDITS.txt \
+                   CHANGELOG.md \
+                   CHANGELOG-jp.md \
+                   runtime/README\ \(en\).txt \
+                   runtime/README\ \(ja\).txt \
+                   "$pkgdir/usr/share/ElonaFoobar/"
+}
