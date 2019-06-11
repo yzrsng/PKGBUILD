@@ -1,0 +1,2 @@
+# PKGBUILD
+my archlinux package
